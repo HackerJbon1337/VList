@@ -1,6 +1,40 @@
-import Link from "next/link";
+"use client";
 
-export default function LoginPage() {
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useAuthStore } from "@/store";
+
+function LoginForm() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const redirect = searchParams.get("redirect") || "/";
+
+    const { user, isLoading, error, login, clearError } = useAuthStore();
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    // Redirect if already logged in
+    useEffect(() => {
+        if (user) {
+            router.push(redirect);
+        }
+    }, [user, router, redirect]);
+
+    // Clear error on mount
+    useEffect(() => {
+        clearError();
+    }, [clearError]);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const success = await login(email, password);
+        if (success) {
+            router.push(redirect);
+        }
+    };
+
     return (
         <div className="space-y-6">
             <div className="space-y-2 text-center">
@@ -11,7 +45,14 @@ export default function LoginPage() {
             </div>
 
             <div className="rounded-lg border border-border/40 bg-card p-6 shadow-sm">
-                <form className="space-y-4">
+                {/* Error Message */}
+                {error && (
+                    <div className="mb-4 rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                        {error}
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
                         <label htmlFor="email" className="text-sm font-medium">
                             Email
@@ -19,8 +60,11 @@ export default function LoginPage() {
                         <input
                             id="email"
                             type="email"
-                            placeholder="you@example.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="you@university.edu"
                             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                            disabled={isLoading}
                         />
                     </div>
 
@@ -31,26 +75,41 @@ export default function LoginPage() {
                         <input
                             id="password"
                             type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             placeholder="••••••••"
                             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                            disabled={isLoading}
                         />
                     </div>
 
                     <button
                         type="submit"
-                        className="inline-flex h-10 w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                        disabled={isLoading}
+                        className="inline-flex h-10 w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
                     >
-                        Sign In
+                        {isLoading ? "Signing in..." : "Sign In"}
                     </button>
                 </form>
 
                 <div className="mt-6 text-center text-sm">
                     <span className="text-muted-foreground">Don&apos;t have an account? </span>
-                    <Link href="/register" className="font-medium text-primary hover:underline">
+                    <Link
+                        href={`/register${redirect !== "/" ? `?redirect=${redirect}` : ""}`}
+                        className="font-medium text-primary hover:underline"
+                    >
                         Sign up
                     </Link>
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={<div className="flex justify-center p-8">Loading...</div>}>
+            <LoginForm />
+        </Suspense>
     );
 }

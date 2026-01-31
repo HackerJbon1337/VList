@@ -1,0 +1,221 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { categories, locations, Product } from "@/lib/products";
+import { useAuthStore } from "@/store";
+import { Loader2, Upload } from "lucide-react";
+
+// Types remain same...
+type ProductType = "Sell" | "Trade" | "Donate";
+type Condition = "New" | "Like New" | "Good" | "Fair" | "Poor";
+
+interface ListingFormData {
+    title: string;
+    description: string;
+    price: string;
+    category: string;
+    location: string;
+    condition: Condition;
+    type: ProductType;
+    image: string;
+}
+
+const initialFormData: ListingFormData = {
+    title: "",
+    description: "",
+    price: "",
+    category: "",
+    location: "",
+    condition: "Good",
+    type: "Sell",
+    image: "",
+};
+
+export function CreateListingForm() {
+    const router = useRouter();
+    const { user } = useAuthStore();
+    const [formData, setFormData] = useState<ListingFormData>(initialFormData);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    // Handlers remain same...
+    const handleChange = (
+        e: React.ChangeEvent<
+            HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+        >
+    ) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+
+        if (name === "type" && value === "Donate") {
+            setFormData((prev) => ({ ...prev, price: "0" }));
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError(null);
+
+        // Minimal Validation
+        if (!formData.title.trim()) { setError("Title is required"); return; }
+        if (!formData.category) { setError("Category is required"); return; }
+        if (formData.type === "Sell" && (!formData.price || Number(formData.price) <= 0)) {
+            setError("Price is required");
+            return;
+        }
+
+        setIsSubmitting(true);
+        // Simulate API
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        // Success Logic (Simulated)
+        const newProduct = {
+            id: Date.now().toString(),
+            ...formData,
+            price: Number(formData.price),
+        };
+        console.log("Created:", newProduct);
+        router.push("/marketplace");
+    };
+
+    const generateRandomImage = () => {
+        const seed = Math.random().toString(36).substring(7);
+        setFormData((prev) => ({
+            ...prev,
+            image: `https://picsum.photos/seed/${seed}/400/300`,
+        }));
+    };
+
+    return (
+        <form onSubmit={handleSubmit} className="space-y-8 max-w-2xl mx-auto">
+            {error && (
+                <div className="rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive font-medium">
+                    {error}
+                </div>
+            )}
+
+            {/* Section: Type */}
+            <div className="space-y-3">
+                <label className="text-sm font-medium text-foreground">Listing Type</label>
+                <div className="grid grid-cols-3 gap-3">
+                    {(["Sell", "Trade", "Donate"] as ProductType[]).map((type) => (
+                        <button
+                            key={type}
+                            type="button"
+                            onClick={() =>
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    type,
+                                    price: type === "Donate" ? "0" : prev.price,
+                                }))
+                            }
+                            className={`flex h-12 items-center justify-center rounded-md border text-sm font-medium transition-all ${formData.type === type
+                                ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                                : "border-input bg-background text-muted-foreground hover:bg-accent hover:text-foreground"
+                                }`}
+                        >
+                            {type}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Section: Details */}
+            <div className="space-y-6 rounded-lg border border-border p-6 bg-card">
+                <div className="grid gap-4">
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Title</label>
+                        <input
+                            name="title"
+                            value={formData.title}
+                            onChange={handleChange}
+                            placeholder="What are you listing?"
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        {formData.type !== "Donate" && (
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">Price ($)</label>
+                                <input
+                                    name="price"
+                                    type="number"
+                                    value={formData.price}
+                                    onChange={handleChange}
+                                    placeholder="0.00"
+                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                                />
+                            </div>
+                        )}
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Category</label>
+                            <select
+                                name="category"
+                                value={formData.category}
+                                onChange={handleChange}
+                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                            >
+                                <option value="">Select...</option>
+                                {categories.slice(1).map(c => <option key={c} value={c}>{c}</option>)}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Description</label>
+                        <textarea
+                            name="description"
+                            value={formData.description}
+                            onChange={handleChange}
+                            rows={4}
+                            className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Section: Photos */}
+            <div className="space-y-3">
+                <label className="text-sm font-medium">Photos</label>
+                <div className="flex gap-4 items-start">
+                    <div className="flex-1 space-y-2">
+                        <div className="flex gap-2">
+                            <input
+                                name="image"
+                                value={formData.image}
+                                onChange={handleChange}
+                                placeholder="Image URL..."
+                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                            />
+                            <button type="button" onClick={generateRandomImage} className="px-3 border border-input rounded-md hover:bg-accent text-sm">Random</button>
+                        </div>
+                        <p className="text-xs text-muted-foreground">Tip: Add clear photos to sell 50% faster.</p>
+                    </div>
+
+                    {formData.image ? (
+                        <div className="relative h-24 w-32 rounded-md overflow-hidden border border-border bg-muted">
+                            <Image src={formData.image} alt="Preview" fill className="object-cover" />
+                        </div>
+                    ) : (
+                        <div className="flex h-24 w-32 items-center justify-center rounded-md border border-dashed border-muted-foreground/25 bg-muted/50">
+                            <Upload className="h-6 w-6 text-muted-foreground/50" />
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <div className="pt-4 border-t border-border">
+                <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="flex w-full items-center justify-center rounded-md bg-primary h-11 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 disabled:opacity-50"
+                >
+                    {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing</> : "Post Listing"}
+                </button>
+            </div>
+        </form>
+    );
+}

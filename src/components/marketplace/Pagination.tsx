@@ -1,5 +1,7 @@
 "use client";
 
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
 interface PaginationProps {
     currentPage: number;
     totalPages: number;
@@ -15,51 +17,35 @@ export function Pagination({
 
     const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-    // Show max 5 pages with ellipsis
     const getVisiblePages = () => {
         if (totalPages <= 5) return pages;
-
-        if (currentPage <= 3) {
-            return [...pages.slice(0, 4), "...", totalPages];
-        }
-
-        if (currentPage >= totalPages - 2) {
-            return [1, "...", ...pages.slice(-4)];
-        }
-
-        return [
-            1,
-            "...",
-            currentPage - 1,
-            currentPage,
-            currentPage + 1,
-            "...",
-            totalPages,
-        ];
+        if (currentPage <= 3) return [...pages.slice(0, 4), "...", totalPages];
+        if (currentPage >= totalPages - 2) return [1, "...", ...pages.slice(-4)];
+        return [1, "...", currentPage - 1, currentPage, currentPage + 1, "...", totalPages];
     };
 
     return (
-        <nav className="flex items-center justify-center gap-1">
+        <nav className="flex items-center justify-center gap-2">
             <button
                 onClick={() => onPageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="inline-flex h-10 items-center justify-center rounded-md px-3 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
             >
-                Previous
+                <ChevronLeft className="h-4 w-4" />
             </button>
 
             {getVisiblePages().map((page, index) =>
                 typeof page === "string" ? (
-                    <span key={`ellipsis-${index}`} className="px-2 text-muted-foreground">
-                        {page}
+                    <span key={`ellipsis-${index}`} className="px-1 text-muted-foreground">
+                        ...
                     </span>
                 ) : (
                     <button
                         key={page}
                         onClick={() => onPageChange(page)}
-                        className={`inline-flex h-10 w-10 items-center justify-center rounded-md text-sm font-medium transition-colors ${currentPage === page
-                                ? "bg-primary text-primary-foreground"
-                                : "hover:bg-accent hover:text-accent-foreground"
+                        className={`inline-flex h-9 min-w-[36px] items-center justify-center rounded-md px-3 text-sm font-medium transition-colors ${currentPage === page
+                                ? "bg-primary text-primary-foreground shadow-sm"
+                                : "border border-input bg-background hover:bg-accent hover:text-accent-foreground"
                             }`}
                     >
                         {page}
@@ -70,9 +56,9 @@ export function Pagination({
             <button
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="inline-flex h-10 items-center justify-center rounded-md px-3 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
             >
-                Next
+                <ChevronRight className="h-4 w-4" />
             </button>
         </nav>
     );

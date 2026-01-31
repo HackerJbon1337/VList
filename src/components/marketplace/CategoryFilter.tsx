@@ -12,14 +12,14 @@ export function CategoryFilter({
     onSelect,
 }: CategoryFilterProps) {
     return (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex w-full gap-2 overflow-x-auto pb-4 no-scrollbar sm:flex-wrap sm:overflow-visible sm:pb-0">
             {categories.map((category) => (
                 <button
                     key={category}
                     onClick={() => onSelect(category)}
-                    className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${selected === category
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+                    className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${selected === category
+                        ? "bg-primary text-primary-foreground shadow-md"
+                        : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground border border-transparent hover:border-border"
                         }`}
                 >
                     {category}

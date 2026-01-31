@@ -1,75 +1,74 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { Product } from "@/lib/products";
+import { motion } from "framer-motion";
 
 interface ProductCardProps {
     product: Product;
+    index?: number;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, index = 0 }: ProductCardProps) {
     return (
-        <Link
-            href={`/product/${product.id}`}
-            className="group overflow-hidden rounded-lg border border-border/40 bg-card shadow-sm transition-all hover:border-primary/40 hover:shadow-md"
+        <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{
+                duration: 0.4,
+                delay: index * 0.05,
+                ease: "easeOut",
+            }}
+            whileHover={{ y: -8, transition: { duration: 0.2 } }}
         >
-            {/* Image */}
-            <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-                <Image
-                    src={product.image}
-                    alt={product.title}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                />
-                {/* Type Badge */}
-                <div className="absolute top-2 left-2 rounded-full bg-background/80 px-2 py-1 text-xs font-semibold backdrop-blur-sm">
-                    {product.type}
-                </div>
-                {/* Condition Badge */}
-                <div className="absolute top-2 right-2 rounded-full bg-background/80 px-2 py-1 text-xs font-semibold backdrop-blur-sm">
-                    {product.condition}
-                </div>
-            </div>
+            <Link
+                href={`/product/${product.id}`}
+                className="group flex flex-col h-full rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm overflow-hidden hover:border-[#00d4ff]/50 hover:bg-white/[0.05] transition-all"
+            >
+                {/* Image Container */}
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-white/5">
+                    <Image
+                        src={product.image}
+                        alt={product.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    />
 
-            {/* Content */}
-            <div className="p-4">
-                <div className="mb-2 flex items-start justify-between gap-2">
-                    <h3 className="font-semibold leading-tight group-hover:text-primary transition-colors line-clamp-2">
-                        {product.title}
-                    </h3>
-                    <span className="shrink-0 text-lg font-bold text-primary">
-                        {product.price > 0 ? `$${product.price.toLocaleString()}` : "Free"}
-                    </span>
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                    {/* Badge */}
+                    {(product.condition === "New" || product.type === "Donate") && (
+                        <div className="absolute top-3 left-3">
+                            <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold shadow-lg ${product.type === "Donate"
+                                ? "bg-[#c084fc] text-white shadow-[#c084fc]/30"
+                                : "bg-[#00d4ff] text-black shadow-[#00d4ff]/30"
+                                }`}>
+                                {product.type === "Donate" ? "Free" : "New"}
+                            </span>
+                        </div>
+                    )}
                 </div>
 
-                <p className="mb-3 text-sm text-muted-foreground line-clamp-2">
-                    {product.description}
-                </p>
+                {/* Details */}
+                <div className="flex flex-1 flex-col p-4">
+                    <div className="flex justify-between items-start gap-2">
+                        <h3 className="line-clamp-2 text-sm font-semibold text-white group-hover:text-[#00d4ff] transition-colors">
+                            {product.title}
+                        </h3>
+                        <span className="shrink-0 text-lg font-bold bg-gradient-to-r from-[#00d4ff] to-[#00a8cc] bg-clip-text text-transparent">
+                            {product.price > 0 ? `₹${product.price}` : "Free"}
+                        </span>
+                    </div>
 
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="12"
-                            height="12"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        >
-                            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                            <circle cx="12" cy="10" r="3" />
-                        </svg>
-                        {product.location}
-                    </span>
-                    <span className="flex items-center gap-1">
-                        {product.seller.major && `${product.seller.major} • `}
-                        {product.seller.gradYear}
-                    </span>
+                    <div className="mt-auto pt-4 flex items-center justify-between text-xs text-white/40">
+                        <span className="truncate max-w-[60%]">{product.location}</span>
+                        <span className="px-2 py-1 rounded-full bg-white/5">{product.category}</span>
+                    </div>
                 </div>
-            </div>
-        </Link>
+            </Link>
+        </motion.div>
     );
 }
