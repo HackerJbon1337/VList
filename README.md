@@ -1,36 +1,135 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VList - Campus Marketplace 🎓
 
-## Getting Started
+A modern, feature-rich marketplace platform built for college students to buy, sell, and trade items within their campus community.
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-16.1.6-black?style=flat-square&logo=next.js)
+![React](https://img.shields.io/badge/React-19.2.3-61DAFB?style=flat-square&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?style=flat-square&logo=tailwind-css)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## ✨ Features
+
+- **🛒 Marketplace** - Browse and discover products from fellow students
+- **📦 Product Listings** - Create and manage your own listings
+- **🔍 Smart Search** - Find exactly what you're looking for
+- **🎨 Modern UI** - Beautiful, responsive design with smooth animations
+- **🌙 Dark Mode** - Easy on the eyes, day or night
+- **🔐 Authentication** - Secure user authentication with Supabase
+- **🛍️ Shopping Cart** - Add items and checkout seamlessly
+
+## 🛠️ Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| **Framework** | Next.js 16 (App Router) |
+| **Language** | TypeScript |
+| **Styling** | Tailwind CSS 4 |
+| **Animations** | Framer Motion |
+| **State Management** | Zustand |
+| **Data Fetching** | TanStack React Query |
+| **Authentication** | Supabase Auth |
+| **Database** | Supabase (PostgreSQL) |
+| **Icons** | Lucide React |
+
+## 📁 Project Structure
+
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── (protected)/        # Protected routes (auth required)
+│   └── ...                 # Public pages
+├── components/
+│   ├── animations/         # Animation components (FadeIn, Stagger)
+│   ├── auth/               # Authentication components
+│   ├── layout/             # Layout components (Header, Footer)
+│   ├── listing/            # Listing-related components
+│   ├── marketplace/        # Marketplace UI components
+│   ├── product/            # Product display components
+│   ├── providers/          # React context providers
+│   ├── react-bits/         # Reusable UI components
+│   └── skeletons/          # Loading skeleton components
+├── hooks/                  # Custom React hooks
+├── lib/                    # Utility functions & configurations
+│   └── supabase/           # Supabase client configuration
+└── store/                  # Zustand state stores
+    ├── auth.ts             # Authentication state
+    └── cart.ts             # Shopping cart state
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Getting Started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prerequisites
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Node.js 18+ 
+- npm, yarn, pnpm, or bun
 
-## Learn More
+### Installation
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/HackerJbon1337/VList.git
+   cd VList/vlist
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Install dependencies**
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **Set up environment variables**
+   ```bash
+   cp .env.local.example .env.local
+   ```
+   
+   Update `.env.local` with your Supabase credentials:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
 
-## Deploy on Vercel
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5. **Open your browser**
+   
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📜 Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+
+## 🎨 UI Components
+
+VList includes a rich set of custom UI components:
+
+- **BlurText** - Text with blur animation effects
+- **GradientText** - Animated gradient text
+- **SpotlightCard** - Cards with spotlight hover effect
+- **FadeIn / Stagger** - Animation wrappers
+- **Skeletons** - Loading placeholder components
+- And many more...
+
+## 🔗 Links
+
+- **Repository**: [github.com/HackerJbon1337/VList](https://github.com/HackerJbon1337/VList)
+- **Next.js Docs**: [nextjs.org/docs](https://nextjs.org/docs)
+- **Supabase Docs**: [supabase.com/docs](https://supabase.com/docs)
+
+## 📄 License
+
+This project is private and not licensed for public use.
+
+---
+
+Made with ❤️ for campus communities
