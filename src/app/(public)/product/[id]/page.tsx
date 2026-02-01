@@ -9,6 +9,101 @@ import {
 } from "@/components/product";
 import { ShieldCheck, MessageSquare } from "lucide-react";
 
+// Featured products from homepage (College Essentials)
+const FEATURED_PRODUCTS = [
+    {
+        id: "101",
+        title: "Sony WH-1000XM5 Headphones",
+        description: "Premium wireless noise-cancelling headphones. Perfect for studying in noisy environments. Includes carrying case and cables.",
+        price: 24990,
+        image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?q=80&w=1000&auto=format&fit=crop",
+        category: "Electronics",
+        location: "CB (Central Block)",
+        condition: "Like New" as const,
+        type: "Sell" as const,
+        seller: { name: "Featured Seller", rating: 5 },
+        createdAt: new Date().toISOString(),
+    },
+    {
+        id: "103",
+        title: "Ergonomic Mesh Chair",
+        description: "Comfortable mesh office chair with lumbar support. Great for long study sessions. Adjustable height and armrests.",
+        price: 8500,
+        image: "https://images.unsplash.com/photo-1505843490538-5133c6c7d0e1?q=80&w=1000&auto=format&fit=crop",
+        category: "Furniture",
+        location: "MH1",
+        condition: "Good" as const,
+        type: "Sell" as const,
+        seller: { name: "Featured Seller", rating: 5 },
+        createdAt: new Date().toISOString(),
+    },
+    {
+        id: "104",
+        title: "TI-84 Plus CE Calculator",
+        description: "Texas Instruments graphing calculator. Essential for engineering and math courses. Includes charging cable.",
+        price: 7500,
+        image: "https://images.unsplash.com/photo-1624969862293-b749659ccc4e?q=80&w=1000&auto=format&fit=crop",
+        category: "School Supplies",
+        location: "AB1",
+        condition: "Like New" as const,
+        type: "Sell" as const,
+        seller: { name: "Featured Seller", rating: 5 },
+        createdAt: new Date().toISOString(),
+    },
+    {
+        id: "105",
+        title: "Mechanical Keyboard 60%",
+        description: "Compact mechanical keyboard with Cherry MX Blue switches. RGB backlit. Perfect for dorm desk setup.",
+        price: 4500,
+        image: "https://images.unsplash.com/photo-1595225476474-87563907a212?q=80&w=1000&auto=format&fit=crop",
+        category: "Electronics",
+        location: "Food Street",
+        condition: "New" as const,
+        type: "Sell" as const,
+        seller: { name: "Featured Seller", rating: 5 },
+        createdAt: new Date().toISOString(),
+    },
+    {
+        id: "106",
+        title: "LED Desk Lamp with Wireless Charging",
+        description: "Modern LED desk lamp with built-in wireless charging pad. Multiple brightness levels and color temperatures.",
+        price: 1800,
+        image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?q=80&w=1000&auto=format&fit=crop",
+        category: "Furniture",
+        location: "LH2",
+        condition: "New" as const,
+        type: "Sell" as const,
+        seller: { name: "Featured Seller", rating: 5 },
+        createdAt: new Date().toISOString(),
+    },
+    {
+        id: "107",
+        title: "Calculus: Early Transcendentals",
+        description: "8th Edition by James Stewart. Used for MATH 101/102. Some highlighting, otherwise excellent condition.",
+        price: 2200,
+        image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1000&auto=format&fit=crop",
+        category: "Textbooks",
+        location: "AB2",
+        condition: "Good" as const,
+        type: "Sell" as const,
+        seller: { name: "Featured Seller", rating: 5 },
+        createdAt: new Date().toISOString(),
+    },
+    {
+        id: "108",
+        title: "Herschel Retreat Backpack",
+        description: "Classic Herschel backpack with laptop sleeve. Perfect for daily commute to classes. Barely used.",
+        price: 4200,
+        image: "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?q=80&w=1000&auto=format&fit=crop",
+        category: "Accessories",
+        location: "Rock Plaza",
+        condition: "Like New" as const,
+        type: "Sell" as const,
+        seller: { name: "Featured Seller", rating: 5 },
+        createdAt: new Date().toISOString(),
+    },
+];
+
 interface ProductDetailPageProps {
     params: Promise<{ id: string }>;
 }
@@ -68,6 +163,11 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     // Fallback to mock data if not found in Supabase
     if (!product) {
         product = getProductById(id);
+    }
+
+    // Fallback to featured products (College Essentials from homepage)
+    if (!product) {
+        product = FEATURED_PRODUCTS.find(p => p.id === id);
     }
 
     if (!product) {
