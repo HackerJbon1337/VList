@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
     SearchBar,
     CategoryFilter,
@@ -8,21 +8,37 @@ import {
     ProductGrid,
     Pagination,
 } from "@/components/marketplace";
-import { getProducts, categories, locations } from "@/lib/products";
+import { fetchProducts, categories, locations, type Product } from "@/lib/products";
 
 export default function MarketplacePage() {
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("All");
     const [location, setLocation] = useState("All Campuses");
     const [page, setPage] = useState(1);
+    const [products, setProducts] = useState<Product[]>([]);
+    const [total, setTotal] = useState(0);
+    const [pages, setPages] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const { products, total, pages } = getProducts({
-        search,
-        category,
-        location,
-        page,
-        limit: 8,
-    });
+    // Fetch products whenever filters change
+    useEffect(() => {
+        const loadProducts = async () => {
+            setIsLoading(true);
+            const result = await fetchProducts({
+                search,
+                category,
+                location,
+                page,
+                limit: 8,
+            });
+            setProducts(result.products);
+            setTotal(result.total);
+            setPages(result.pages);
+            setIsLoading(false);
+        };
+
+        loadProducts();
+    }, [search, category, location, page]);
 
     const handleSearch = useCallback((query: string) => {
         setSearch(query);
@@ -121,7 +137,16 @@ export default function MarketplacePage() {
             )}
 
             {/* Product Grid */}
-            <ProductGrid products={products} />
+            {isLoading ? (
+                <div className="flex min-h-[400px] items-center justify-center">
+                    <div className="text-center">
+                        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
+                        <p className="mt-4 text-muted-foreground">Loading products...</p>
+                    </div>
+                </div>
+            ) : (
+                <ProductGrid products={products} />
+            )}
 
             {/* Pagination */}
             <div className="mt-12">
@@ -130,3 +155,4 @@ export default function MarketplacePage() {
         </div>
     );
 }
+

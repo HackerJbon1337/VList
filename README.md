@@ -120,6 +120,32 @@ VList includes a rich set of custom UI components:
 - **Skeletons** - Loading placeholder components
 - And many more...
 
+## 🔌 Backend API
+
+VList includes a complete API built with Next.js API Routes:
+
+### API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/products` | GET | List products (with search, filters, pagination) |
+| `/api/products` | POST | Create new listing (auth required) |
+| `/api/products/[id]` | GET | Get product details |
+| `/api/products/[id]` | PUT | Update product (owner only) |
+| `/api/products/[id]` | DELETE | Delete product (owner only) |
+| `/api/profile` | GET | Get current user profile (auth required) |
+| `/api/profile` | PUT | Update profile (auth required) |
+| `/api/users/[id]` | GET | Get public user profile |
+
+### Database Setup
+
+1. Create a Supabase project at [supabase.com](https://supabase.com)
+2. Run the schema SQL in Supabase SQL Editor:
+   ```bash
+   # File location: supabase/schema.sql
+   ```
+3. Update `.env.local` with your Supabase credentials
+
 ## 🔗 Links
 
 - **Repository**: [github.com/HackerJbon1337/VList](https://github.com/HackerJbon1337/VList)

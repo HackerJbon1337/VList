@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 import { getProductById } from "@/lib/products";
 import {
     ProductImageGallery,
@@ -14,7 +15,60 @@ interface ProductDetailPageProps {
 
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
     const { id } = await params;
-    const product = getProductById(id);
+
+    // Try to fetch from Supabase first
+    let product = null;
+
+    try {
+        const supabase = await createClient();
+        const { data, error } = await supabase
+            .from("products")
+            .select("*")
+            .eq("id", id)
+            .eq("is_active", true)
+            .single();
+
+        if (data && !error) {
+            // Get seller info separately
+            let seller: { name: string; rating: number; major?: string; gradYear?: number } = { name: "Unknown", rating: 5 };
+            if (data.seller_id) {
+                const { data: sellerData } = await supabase
+                    .from("profiles")
+                    .select("name, rating, major, grad_year")
+                    .eq("id", data.seller_id)
+                    .single();
+                if (sellerData) {
+                    seller = {
+                        name: sellerData.name || "Unknown",
+                        rating: sellerData.rating || 5,
+                        major: sellerData.major ?? undefined,
+                        gradYear: sellerData.grad_year ?? undefined,
+                    };
+                }
+            }
+
+            product = {
+                id: data.id,
+                title: data.title,
+                description: data.description,
+                price: data.price,
+                image: data.image_url,
+                category: data.category,
+                location: data.location,
+                condition: data.condition,
+                type: data.type,
+                seller,
+                createdAt: data.created_at,
+            };
+        }
+    } catch {
+        // If Supabase fails, fall back to mock data
+    }
+
+    // Fallback to mock data if not found in Supabase
+    if (!product) {
+        product = getProductById(id);
+    }
 
     if (!product) {
         notFound();
@@ -90,3 +144,4 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         </div>
     );
 }
+

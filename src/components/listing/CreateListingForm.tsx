@@ -61,23 +61,46 @@ export function CreateListingForm() {
         // Minimal Validation
         if (!formData.title.trim()) { setError("Title is required"); return; }
         if (!formData.category) { setError("Category is required"); return; }
+        if (!formData.location) { setError("Location is required"); return; }
         if (formData.type === "Sell" && (!formData.price || Number(formData.price) <= 0)) {
             setError("Price is required");
             return;
         }
 
         setIsSubmitting(true);
-        // Simulate API
-        await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        // Success Logic (Simulated)
-        const newProduct = {
-            id: Date.now().toString(),
-            ...formData,
-            price: Number(formData.price),
-        };
-        console.log("Created:", newProduct);
-        router.push("/marketplace");
+        try {
+            const response = await fetch("/api/products", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    title: formData.title,
+                    description: formData.description,
+                    price: Number(formData.price) || 0,
+                    image: formData.image || "https://picsum.photos/seed/default/400/300",
+                    category: formData.category,
+                    location: formData.location || "North Campus",
+                    condition: formData.condition,
+                    type: formData.type,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setError(data.error || "Failed to create listing");
+                setIsSubmitting(false);
+                return;
+            }
+
+            console.log("Created:", data.product);
+            router.push("/marketplace");
+        } catch (err) {
+            setError("Failed to create listing. Please try again.");
+            setIsSubmitting(false);
+        }
     };
 
     const generateRandomImage = () => {
@@ -160,6 +183,34 @@ export function CreateListingForm() {
                             >
                                 <option value="">Select...</option>
                                 {categories.slice(1).map(c => <option key={c} value={c}>{c}</option>)}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Location</label>
+                            <select
+                                name="location"
+                                value={formData.location}
+                                onChange={handleChange}
+                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                            >
+                                <option value="">Select...</option>
+                                {locations.slice(1).map(l => <option key={l} value={l}>{l}</option>)}
+                            </select>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Condition</label>
+                            <select
+                                name="condition"
+                                value={formData.condition}
+                                onChange={handleChange}
+                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                            >
+                                {(["New", "Like New", "Good", "Fair", "Poor"] as Condition[]).map(c => (
+                                    <option key={c} value={c}>{c}</option>
+                                ))}
                             </select>
                         </div>
                     </div>

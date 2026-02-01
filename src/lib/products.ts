@@ -274,3 +274,50 @@ export function getProducts(filters: {
 export function getProductById(id: string): Product | undefined {
     return mockProducts.find((p) => p.id === id);
 }
+
+// =====================
+// API-based functions (use when connected to Supabase)
+// =====================
+
+export async function fetchProducts(filters: {
+    search?: string;
+    category?: string;
+    location?: string;
+    page?: number;
+    limit?: number;
+}): Promise<{ products: Product[]; total: number; pages: number }> {
+    const params = new URLSearchParams();
+    if (filters.search) params.set("search", filters.search);
+    if (filters.category) params.set("category", filters.category);
+    if (filters.location) params.set("location", filters.location);
+    if (filters.page) params.set("page", filters.page.toString());
+    if (filters.limit) params.set("limit", filters.limit.toString());
+
+    try {
+        const response = await fetch(`/api/products?${params.toString()}`);
+        if (!response.ok) {
+            // Fallback to mock data if API fails
+            return getProducts(filters);
+        }
+        return await response.json();
+    } catch {
+        // Fallback to mock data if API fails
+        return getProducts(filters);
+    }
+}
+
+export async function fetchProductById(id: string): Promise<Product | undefined> {
+    try {
+        const response = await fetch(`/api/products/${id}`);
+        if (!response.ok) {
+            // Fallback to mock data
+            return getProductById(id);
+        }
+        const data = await response.json();
+        return data.product;
+    } catch {
+        // Fallback to mock data
+        return getProductById(id);
+    }
+}
+
