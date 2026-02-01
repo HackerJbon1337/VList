@@ -20,12 +20,16 @@ import {
     BounceCard,
 } from "@/components/react-bits";
 import { CollegeEssentials } from "@/components/marketplace/CollegeEssentials";
+import { MockDataDisclaimer } from "@/components/marketplace/MockDataDisclaimer";
 
 const orbitron = Orbitron({ subsets: ["latin"] });
 
 export default function LandingPage() {
     return (
         <div className="flex flex-col min-h-screen bg-[#0B0F14] relative overflow-hidden">
+            {/* Mock Data Disclaimer Popup */}
+            <MockDataDisclaimer isMockData={true} />
+
             {/* Background Effects */}
             <ColourBlends colors={["#22D3EE", "#60A5FA", "#A78BFA"]} className="-z-10" />
             <Dither opacity={0.04} className="-z-5" />
