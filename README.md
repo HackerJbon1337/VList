@@ -6,6 +6,23 @@ A modern, feature-rich marketplace platform built for college students to buy, s
 ![React](https://img.shields.io/badge/React-19.2.3-61DAFB?style=flat-square&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?style=flat-square&logo=tailwind-css)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FHackerJbon1337%2FVList)
+
+...
+
+## 🚀 Deployment
+
+The easiest way to deploy VList is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme).
+
+1. Push your code to a GitHub repository.
+2. Import the project in Vercel.
+3. Add your **Environment Variables**:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+4. Click **Deploy**!
+
+### Important: Supabase Redirects
+After deployment, go to your Supabase Dashboard > Authentication > URL Configuration and add your Vercel URL (e.g., `https://vlist.vercel.app`) to "Site URL" and "Redirect URLs".
 
 ## ✨ Features
 
