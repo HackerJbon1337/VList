@@ -76,10 +76,14 @@ export async function GET(request: NextRequest) {
         createdAt: product.created_at,
     }));
 
+    // Check if we have real products (not mock data)
+    const hasRealProducts = (count || 0) > 0;
+
     return NextResponse.json({
         products: products || [],
         total: count || 0,
         pages: Math.ceil((count || 0) / limit),
+        isMockData: !hasRealProducts,
     });
 }
 

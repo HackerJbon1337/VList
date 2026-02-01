@@ -294,7 +294,7 @@ export async function fetchProducts(filters: {
     location?: string;
     page?: number;
     limit?: number;
-}): Promise<{ products: Product[]; total: number; pages: number }> {
+}): Promise<{ products: Product[]; total: number; pages: number; isMockData?: boolean }> {
     const params = new URLSearchParams();
     if (filters.search) params.set("search", filters.search);
     if (filters.category) params.set("category", filters.category);
@@ -306,12 +306,12 @@ export async function fetchProducts(filters: {
         const response = await fetch(`/api/products?${params.toString()}`);
         if (!response.ok) {
             // Fallback to mock data if API fails
-            return getProducts(filters);
+            return { ...getProducts(filters), isMockData: true };
         }
         return await response.json();
     } catch {
         // Fallback to mock data if API fails
-        return getProducts(filters);
+        return { ...getProducts(filters), isMockData: true };
     }
 }
 

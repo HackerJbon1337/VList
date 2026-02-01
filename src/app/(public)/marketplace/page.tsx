@@ -8,7 +8,8 @@ import {
     ProductGrid,
     Pagination,
 } from "@/components/marketplace";
-import { fetchProducts, categories, locations, type Product } from "@/lib/products";
+import { MockDataDisclaimer } from "@/components/marketplace/MockDataDisclaimer";
+import { fetchProducts, getProducts, categories, locations, type Product } from "@/lib/products";
 
 export default function MarketplacePage() {
     const [search, setSearch] = useState("");
@@ -19,6 +20,7 @@ export default function MarketplacePage() {
     const [total, setTotal] = useState(0);
     const [pages, setPages] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
+    const [isMockData, setIsMockData] = useState(false);
 
     // Fetch products whenever filters change
     useEffect(() => {
@@ -31,9 +33,22 @@ export default function MarketplacePage() {
                 page,
                 limit: 8,
             });
-            setProducts(result.products);
-            setTotal(result.total);
-            setPages(result.pages);
+
+            // Check if we got real products or need to show mock data
+            if (result.isMockData || result.products.length === 0) {
+                // No real products yet, show mock data
+                const mockResult = getProducts({ search, category, location, page, limit: 8 });
+                setProducts(mockResult.products);
+                setTotal(mockResult.total);
+                setPages(mockResult.pages);
+                setIsMockData(true);
+            } else {
+                // Real products exist, show only those
+                setProducts(result.products);
+                setTotal(result.total);
+                setPages(result.pages);
+                setIsMockData(false);
+            }
             setIsLoading(false);
         };
 
@@ -57,11 +72,18 @@ export default function MarketplacePage() {
 
     return (
         <div className="container mx-auto max-w-7xl px-4 py-8">
+            {/* Mock Data Disclaimer Popup */}
+            <MockDataDisclaimer isMockData={isMockData} />
+
             {/* Header */}
             <div className="mb-8">
                 <h1 className="text-3xl font-bold">Marketplace</h1>
                 <p className="mt-2 text-muted-foreground">
-                    Discover {total.toLocaleString()} amazing products from trusted sellers
+                    {isMockData ? (
+                        <>Showing demo products • <span className="text-amber-500">Real listings coming soon!</span></>
+                    ) : (
+                        <>Discover {total.toLocaleString()} amazing products from trusted sellers</>
+                    )}
                 </p>
             </div>
 
