@@ -162,7 +162,7 @@ export function CreateListingForm() {
                     <div className="grid grid-cols-2 gap-4">
                         {formData.type !== "Donate" && (
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Price ($)</label>
+                                <label className="text-sm font-medium">Price (₹)</label>
                                 <input
                                     name="price"
                                     type="number"
@@ -232,23 +232,55 @@ export function CreateListingForm() {
             <div className="space-y-3">
                 <label className="text-sm font-medium">Photos</label>
                 <div className="flex gap-4 items-start">
-                    <div className="flex-1 space-y-2">
+                    <div className="flex-1 space-y-3">
+                        {/* Upload Buttons */}
                         <div className="flex gap-2">
-                            <input
-                                name="image"
-                                value={formData.image}
-                                onChange={handleChange}
-                                placeholder="Image URL..."
-                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                            />
-                            <button type="button" onClick={generateRandomImage} className="px-3 border border-input rounded-md hover:bg-accent text-sm">Random</button>
+                            <label className="flex-1 flex items-center justify-center gap-2 h-10 px-4 border border-input rounded-md hover:bg-accent cursor-pointer text-sm">
+                                <Upload className="h-4 w-4" />
+                                <span>Gallery</span>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                            const reader = new FileReader();
+                                            reader.onloadend = () => {
+                                                setFormData(prev => ({ ...prev, image: reader.result as string }));
+                                            };
+                                            reader.readAsDataURL(file);
+                                        }
+                                    }}
+                                />
+                            </label>
+                            <label className="flex-1 flex items-center justify-center gap-2 h-10 px-4 border border-input rounded-md hover:bg-accent cursor-pointer text-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" /><circle cx="12" cy="13" r="3" /></svg>
+                                <span>Camera</span>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    capture="environment"
+                                    className="hidden"
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                            const reader = new FileReader();
+                                            reader.onloadend = () => {
+                                                setFormData(prev => ({ ...prev, image: reader.result as string }));
+                                            };
+                                            reader.readAsDataURL(file);
+                                        }
+                                    }}
+                                />
+                            </label>
                         </div>
                         <p className="text-xs text-muted-foreground">Tip: Add clear photos to sell 50% faster.</p>
                     </div>
 
                     {formData.image ? (
                         <div className="relative h-24 w-32 rounded-md overflow-hidden border border-border bg-muted">
-                            <Image src={formData.image} alt="Preview" fill className="object-cover" />
+                            <Image src={formData.image} alt="Preview" fill className="object-cover" unoptimized />
                         </div>
                     ) : (
                         <div className="flex h-24 w-32 items-center justify-center rounded-md border border-dashed border-muted-foreground/25 bg-muted/50">

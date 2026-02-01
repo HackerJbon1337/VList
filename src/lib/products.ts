@@ -34,13 +34,22 @@ export const categories = [
 
 export const locations = [
     "All Campuses",
-    "North Campus",
-    "South Campus",
-    "West Campus",
-    "East Campus",
-    "University Village",
-    "Downtown",
-    "Off-Campus",
+    "CB (Central Block)",
+    "AB1",
+    "AB2",
+    "Food Street",
+    "Rock Plaza",
+    "Maggie Hotspot",
+    "MH1",
+    "MH2",
+    "MH3",
+    "MH4",
+    "MH5",
+    "MH6",
+    "LH1",
+    "LH2",
+    "LH3",
+    "Sports Triangle",
 ] as const;
 
 export const mockProducts: Product[] = [
