@@ -83,32 +83,51 @@ export function CollegeEssentials() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                     {ESSENTIALS.map((item, i) => (
                         <BounceCard key={item.id} delay={i * 0.1} className="h-full">
-                            <SpotlightCard className="h-full bg-white/[0.03] border-white/10 overflow-hidden group">
-                                <div className="relative aspect-square w-full overflow-hidden">
-                                    <Image
-                                        src={item.image}
-                                        alt={item.title}
-                                        fill
-                                        className="object-cover transition-transform duration-500 group-hover:scale-110"
-                                    />
-                                    <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full border border-white/10">
-                                        {item.tag}
-                                    </div>
-                                </div>
-                                <div className="p-4">
-                                    <div className="text-xs text-[#00d4ff] font-medium mb-1 uppercase tracking-wide">{item.category}</div>
-                                    <h3 className="font-semibold text-white mb-2 line-clamp-1">{item.title}</h3>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-white/90 font-bold">₹{item.price.toLocaleString('en-IN')}</span>
-                                        <div className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center text-white group-hover:bg-[#00d4ff] group-hover:text-black transition-colors">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12 7-7 7 7" /><path d="M12 19V5" /></svg>
+                            <Link href={`/product/${item.id}`} className="block h-full">
+                                <SpotlightCard className="h-full bg-white/[0.03] border-white/10 overflow-hidden group cursor-pointer">
+                                    <div className="relative aspect-square w-full overflow-hidden">
+                                        <Image
+                                            src={item.image}
+                                            alt={item.title}
+                                            fill
+                                            className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                        />
+                                        <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full border border-white/10">
+                                            {item.tag}
                                         </div>
                                     </div>
-                                </div>
-                            </SpotlightCard>
+                                    <div className="p-4">
+                                        <div className="text-xs text-[#00d4ff] font-medium mb-1 uppercase tracking-wide">{item.category}</div>
+                                        <h3 className="font-semibold text-white mb-2 line-clamp-1">{item.title}</h3>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-white/90 font-bold">₹{item.price.toLocaleString('en-IN')}</span>
+                                            <div className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center text-white group-hover:bg-[#00d4ff] group-hover:text-black transition-colors">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </SpotlightCard>
+                            </Link>
                         </BounceCard>
                     ))}
                 </div>
+
+                {/* View More in Marketplace Button */}
+                <motion.div
+                    className="mt-12 text-center"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.4 }}
+                >
+                    <Link
+                        href="/marketplace"
+                        className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#00d4ff] to-[#00ff88] text-black font-semibold rounded-full hover:shadow-lg hover:shadow-[#00d4ff]/25 transition-all duration-300 hover:scale-105"
+                    >
+                        <span>View More in Marketplace</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                    </Link>
+                </motion.div>
             </div>
         </section>
     );
